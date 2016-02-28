@@ -20,7 +20,7 @@ public class PNJ : Controlable {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //transform.position = new Vector3(transform.position.x, transform.position.y + .5f, transform.position.z);
-            rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0, 12), ForceMode2D.Impulse);
         }
         else
         {

@@ -20,10 +20,10 @@ public class Controlable : MonoBehaviour {
 
     void OnMouseDown()
     {
-        if (usable)
+        if (usable && Vector2.Distance(transform.position,pC.transform.position) < 12f)
         {
+            TakeControl(true);
             pC.ChangeBody(transform);
-            usable = false;
         }
     }
 
@@ -39,5 +39,10 @@ public class Controlable : MonoBehaviour {
             //transform.position = new Vector3(transform.position.x + .1f, transform.position.y, transform.position.z);
             transform.Translate(transform.right / 10);
         }
+    }
+
+    public virtual void TakeControl(bool b)
+    {
+        usable = !b;
     }
 }

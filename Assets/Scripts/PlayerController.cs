@@ -6,19 +6,62 @@ public class PlayerController : MonoBehaviour
 
     Controlable currentBody;
 
+    LineRenderer lineRenderer;
 
     // Use this for initialization
     void Start()
     {
         currentBody = transform.parent.GetComponent<Controlable>();
+
+        float theta_scale = 0.1f;             //Set lower to add more points
+        int size = (int)((2.0 * Mathf.PI) / theta_scale); //Total number of points in circle.
+
+        lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
+        lineRenderer.SetColors(Color.black, Color.blue);
+        lineRenderer.SetWidth(0.2F, 0.2F);
+        lineRenderer.SetVertexCount(size+1);
+
+        int i = 0;
+        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
+        {
+            float x = 12f * Mathf.Cos(theta);
+            float y = 12f * Mathf.Sin(theta);
+
+            Vector3 pos = new Vector3(x, y, 0);
+
+
+            Debug.Log(i + " " + pos);
+
+            lineRenderer.SetPosition(i, pos);
+            i += 1;
+        }
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
         currentBody.Move();
-    }
 
+        float theta_scale = 0.1f;             //Set lower to add more points
+        int size = (int)((2.0 * Mathf.PI) / theta_scale); //Total number of points in circle.
+        
+        lineRenderer.SetWidth(0.2F, 0.2F);
+        lineRenderer.SetVertexCount(size + 1);
+
+        int i = 0;
+        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
+        {
+            float x = transform.position.x + 12f * Mathf.Cos(theta);
+            float y = transform.position.y + 12f * Mathf.Sin(theta);
+
+            Vector3 pos = new Vector3(x, y, 0);
+            
+            lineRenderer.SetPosition(i, pos);
+            i += 1;
+        }
+    }
+    
     public void ChangeBody(Transform t)
     {
 
@@ -37,10 +80,12 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
 
-        currentBody.usable = true;
+
+        transform.parent = t;
+
+        currentBody.TakeControl(false);
 
         currentBody = t.GetComponent<Controlable>();
-        transform.parent = t;
 
         transform.localPosition = Vector3.zero;
     }
