@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     Controlable currentBody;
 
     LineRenderer lineRenderer;
-
+    
     // Use this for initialization
     void Start()
     {
@@ -29,9 +29,27 @@ public class PlayerController : MonoBehaviour
             float y = 12f * Mathf.Sin(theta);
 
             Vector3 pos = new Vector3(x, y, 0);
+            
+            lineRenderer.SetPosition(i, pos);
+            i += 1;
+        }
+    }
 
+    void DrawCircle(float range)
+    {
+        float theta_scale = 0.1f;             //Set lower to add more points
+        int size = (int)((2.0 * Mathf.PI) / theta_scale); //Total number of points in circle.
 
-            Debug.Log(i + " " + pos);
+        lineRenderer.SetWidth(0.2F, 0.2F);
+        lineRenderer.SetVertexCount(size + 1);
+
+        int i = 0;
+        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
+        {
+            float x = transform.position.x + range * Mathf.Cos(theta);
+            float y = transform.position.y + range * Mathf.Sin(theta);
+
+            Vector3 pos = new Vector3(x, y, 0);
 
             lineRenderer.SetPosition(i, pos);
             i += 1;
@@ -48,23 +66,7 @@ public class PlayerController : MonoBehaviour
 
         currentBody.Move();
 
-        float theta_scale = 0.1f;             //Set lower to add more points
-        int size = (int)((2.0 * Mathf.PI) / theta_scale); //Total number of points in circle.
-        
-        lineRenderer.SetWidth(0.2F, 0.2F);
-        lineRenderer.SetVertexCount(size + 1);
-
-        int i = 0;
-        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
-        {
-            float x = transform.position.x + 12f * Mathf.Cos(theta);
-            float y = transform.position.y + 12f * Mathf.Sin(theta);
-
-            Vector3 pos = new Vector3(x, y, 0);
-            
-            lineRenderer.SetPosition(i, pos);
-            i += 1;
-        }
+        DrawCircle(12f);
     }
     
     public void ChangeBody(Transform t)
