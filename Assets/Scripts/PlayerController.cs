@@ -41,6 +41,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Application.LoadLevel(Application.loadedLevel);
+        }
+
         currentBody.Move();
 
         float theta_scale = 0.1f;             //Set lower to add more points

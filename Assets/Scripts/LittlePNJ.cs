@@ -21,7 +21,7 @@ public class LittlePNJ : Controlable
 
     // Update is called once per frame
     void Update () {
-        if (canBeTaken && Input.GetKeyDown(KeyCode.E))
+        if (canBeTaken && Input.GetKeyUp(KeyCode.E))
         {
             taker.Take(gameObject);
         }
