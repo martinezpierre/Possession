@@ -7,9 +7,13 @@ public class Obstacle : MonoBehaviour {
 
     public GameObject EObject;
 
+    PlayerController pC;
+
     // Use this for initialization
     void Start () {
         EObject.SetActive(false);
+
+        pC = FindObjectOfType<PlayerController>();
     }
 	
 	// Update is called once per frame
@@ -18,20 +22,16 @@ public class Obstacle : MonoBehaviour {
         {
             Destroy(gameObject);
         }
-    }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "PNJBig")
+        if (Vector2.Distance(pC.transform.position, transform.position) < 7f && pC.transform.parent && pC.transform.parent.tag == "PNJBig")
         {
             usable = true;
             EObject.SetActive(true);
         }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        usable = false;
-        EObject.SetActive(false);
+        else
+        {
+            usable = false;
+            EObject.SetActive(false);
+        }
     }
 }

@@ -3,18 +3,20 @@ using System.Collections;
 
 public class Goal : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	    
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    // Use this for initialization
+    PlayerController pC;
 
-    void OnTriggerEnter2D(Collider2D other)
+    // Use this for initialization
+    void Start()
     {
-        Debug.Log("ef");
+        pC = FindObjectOfType<PlayerController>();
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (Vector2.Distance(pC.transform.position, transform.position) < 2f)
+        {
+            Debug.Log("endLevel");
+        }
     }
 }

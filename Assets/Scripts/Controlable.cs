@@ -1,51 +1,101 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Controlable : MonoBehaviour {
+public class Controlable : MonoBehaviour
+{
 
-    PlayerController pC;
+    protected PlayerController pC;
     public bool usable = true;
     protected Rigidbody2D rb;
 
-	// Use this for initialization
-	protected virtual void Start () {
+    protected float distToGround;
+
+    protected bool jumping;
+
+    protected bool canFall;
+
+    protected bool isFalling;
+    
+    // Use this for initialization
+    protected virtual void Start()
+    {
         pC = FindObjectOfType<PlayerController>();
         rb = GetComponent<Rigidbody2D>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    
-	}
+
+        distToGround = GetComponent<Collider2D>().bounds.extents.y;
+
+        jumping = false;
+        canFall = true;
+        isFalling = false;
+
+        GetComponent<Rigidbody2D>().gravityScale = 0;
+    }
+
+    // Update is called once per frame
+    protected virtual void Update()
+    {
+        if (!IsGrounded() && !jumping)
+        {
+            if (canFall)
+            {
+                isFalling = true;
+                transform.Translate(-transform.up / 5);
+            }
+        }
+        else if(IsGrounded())
+        {
+            jumping = false;
+            isFalling = false;
+        }
+    }
 
     void OnMouseDown()
     {
-        if (usable && Vector2.Distance(transform.position,pC.transform.position) < 12f)
+        if (usable && Vector2.Distance(transform.position, pC.transform.position) < 12f)
         {
             TakeControl(true);
             pC.ChangeBody(transform);
         }
     }
 
-   bool[] CheckCollision()
+    bool IsGrounded()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
+        RaycastHit2D hit2 = Physics2D.Raycast(new Vector3(transform.position.x + GetComponent<Collider2D>().bounds.extents.x,transform.position.y,transform.position.z), -Vector3.up, distToGround + 0.1f);
+        RaycastHit2D hit3 = Physics2D.Raycast(new Vector3(transform.position.x - GetComponent<Collider2D>().bounds.extents.x, transform.position.y, transform.position.z), -Vector3.up, distToGround + 0.1f);
+
+        /*if (hit)
+        {
+            Debug.Log(hit.transform.tag);
+        }*/
+
+        return (hit && hit.transform.tag == "Obstacle") || (hit2 && hit2.transform.tag == "Obstacle") || (hit3 && hit3.transform.tag == "Obstacle");
+    }
+
+    bool[] CheckCollision()
     {
         bool[] b = new bool[2];
-        
+
         Vector3 right = transform.right;
 
         Vector3 left = -right;
 
-        float range = transform.lossyScale.x + 0.5f;
+        float range = GetComponent<BoxCollider2D>().bounds.extents.x + 0.1f;
 
         /*Debug.DrawLine(transform.position, transform.position + right * range, Color.red, 100);
         Debug.DrawLine(transform.position, transform.position + left * range, Color.red, 100);*/
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, right, range);
-        RaycastHit2D hit2 = Physics2D.Raycast(transform.position, left, range);
-        
-        b[0] = Physics2D.Raycast(transform.position, right, range) && hit.transform.tag == "Obstacle";
-        
-        b[1] = Physics2D.Raycast(transform.position, left, range) && hit2.transform.tag == "Obstacle";
+        RaycastHit2D hit2 = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - GetComponent<Collider2D>().bounds.extents.y , transform.position.z), right, range);
+        RaycastHit2D hit3 = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y + GetComponent<Collider2D>().bounds.extents.y, transform.position.z), right, range);
+
+        RaycastHit2D hitRear = Physics2D.Raycast(transform.position, left, range);
+        RaycastHit2D hitRear2 = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - GetComponent<Collider2D>().bounds.extents.y, transform.position.z), left, range);
+        RaycastHit2D hitRear3 = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y + GetComponent<Collider2D>().bounds.extents.y, transform.position.z), left, range);
+
+        b[0] = (hit && hit.transform.tag == "Obstacle") || (hit2 && hit2.transform.tag == "Obstacle") || (hit3 && hit3.transform.tag == "Obstacle");
+
+        b[1] = (hitRear && hitRear.transform.tag == "Obstacle") || (hitRear2 && hitRear2.transform.tag == "Obstacle") || (hitRear3 && hitRear3.transform.tag == "Obstacle");
 
         return b;
     }
@@ -53,17 +103,13 @@ public class Controlable : MonoBehaviour {
     public virtual void Move()
     {
         bool[] collisions = CheckCollision();
-
-        Debug.Log(collisions[0] + " " + collisions[1]);
-
+        
         if (Input.GetKey(KeyCode.Q) && !collisions[1])
         {
-            //transform.position = new Vector3(transform.position.x - .1f, transform.position.y, transform.position.z);
             transform.Translate(-transform.right / 10);
         }
         else if (Input.GetKey(KeyCode.D) && !collisions[0])
         {
-            //transform.position = new Vector3(transform.position.x + .1f, transform.position.y, transform.position.z);
             transform.Translate(transform.right / 10);
         }
     }

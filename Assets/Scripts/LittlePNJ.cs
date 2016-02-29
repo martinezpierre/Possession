@@ -10,27 +10,57 @@ public class LittlePNJ : Controlable
     SimplePNJ taker = null;
 
     public GameObject EObject;
-
+    
     // Use this for initialization
     protected override void Start()
     {
         base.Start();
 
-        EObject.SetActive(false);
+        pC = FindObjectOfType<PlayerController>();
+
+        if (EObject)
+        {
+            EObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame
-    void Update () {
+    protected override void Update()
+    {
+        base.Update();
+
         if (canBeTaken && Input.GetKeyUp(KeyCode.E))
         {
             taker.Take(gameObject);
+        }
+
+        if (Vector2.Distance(pC.transform.position,transform.position) < 7f && pC.transform.parent && pC.transform.parent.tag == "PNJSimple" && usable)
+        {
+            canBeTaken = true;
+            taker = pC.transform.parent.GetComponent<SimplePNJ>();
+            if (EObject)
+            {
+                EObject.SetActive(true);
+            }
+        }
+        else
+        {
+            canBeTaken = false;
+            taker = null;
+            if (EObject)
+            {
+                EObject.SetActive(false);
+            }
         }
     }
 
     public void SetCanMoveUp(bool b)
     {
+        if (pC.transform.parent.gameObject != gameObject) return;
         canMoveUp = b;
-        GetComponent<Rigidbody2D>().gravityScale = canMoveUp ? 0 : 1;
+        canFall = canMoveUp ? false : true;
+
+        Debug.Log("canFall " + canFall);
     }
 
     public override void Move()
@@ -51,22 +81,5 @@ public class LittlePNJ : Controlable
             }
         }
         
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "PNJSimple" && usable)
-        {
-            canBeTaken = true;
-            taker = other.GetComponent<SimplePNJ>();
-            EObject.SetActive(true);
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        canBeTaken = false;
-        taker = null;
-        EObject.SetActive(false);
     }
 }

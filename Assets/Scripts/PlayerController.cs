@@ -79,20 +79,24 @@ public class PlayerController : MonoBehaviour
     IEnumerator ChangeAnim(Transform t)
     {
         yield return null;
+        
+        transform.parent = null;
 
-        while(Vector2.Distance(t.position, transform.position) > 0.01f)
+        while (t && transform && Vector2.Distance(t.position, transform.position) > 0.01f)
         {
             float step = 100f * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, t.position, step);
             yield return new WaitForSeconds(0.01f);
         }
-
-
+        
         transform.parent = t;
 
         currentBody.TakeControl(false);
 
-        currentBody = t.GetComponent<Controlable>();
+        if (t)
+        {
+            currentBody = t.GetComponent<Controlable>();
+        }
 
         transform.localPosition = Vector3.zero;
     }
