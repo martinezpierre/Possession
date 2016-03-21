@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Controlable : MonoBehaviour
 {
+    public SpriteRenderer Body;
 
     protected PlayerController pC;
     public bool usable = true;
@@ -117,5 +118,10 @@ public class Controlable : MonoBehaviour
     public virtual void TakeControl(bool b)
     {
         usable = !b;
+
+        if (!b)
+        {
+            Body.color = Color.white;
+        }
     }
 }

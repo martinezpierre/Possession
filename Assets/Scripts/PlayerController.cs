@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     Controlable currentBody;
 
     LineRenderer lineRenderer;
+
+    public Color possessionColor;
     
     // Use this for initialization
     void Start()
@@ -96,6 +98,7 @@ public class PlayerController : MonoBehaviour
         if (t)
         {
             currentBody = t.GetComponent<Controlable>();
+            currentBody.Body.color = possessionColor;
         }
 
         transform.localPosition = Vector3.zero;
