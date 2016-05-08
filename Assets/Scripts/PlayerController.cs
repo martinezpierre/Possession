@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
-        lineRenderer.SetColors(Color.black, Color.blue);
+        lineRenderer.SetColors(Color.black, possessionColor);
         lineRenderer.SetWidth(0.2F, 0.2F);
         lineRenderer.SetVertexCount(size+1);
 
