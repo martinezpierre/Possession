@@ -16,12 +16,19 @@ public class Controlable : MonoBehaviour
     protected bool canFall;
 
     protected bool isFalling;
-    
+
+    protected Animator aC;
+
+    float scaleX;
+
     // Use this for initialization
     protected virtual void Start()
     {
+        scaleX = Body.transform.localScale.x;
+
         pC = FindObjectOfType<PlayerController>();
         rb = GetComponent<Rigidbody2D>();
+        aC = GetComponentInChildren<Animator>();
 
         distToGround = GetComponent<Collider2D>().bounds.extents.y;
 
@@ -107,11 +114,19 @@ public class Controlable : MonoBehaviour
         
         if (Input.GetKey(KeyCode.Q) && !collisions[1])
         {
+            if (aC) aC.SetBool("isWalking",true);
             transform.Translate(-transform.right / 10);
+            Body.transform.localScale = new Vector3(-scaleX, Body.transform.localScale.y, Body.transform.localScale.z);
         }
         else if (Input.GetKey(KeyCode.D) && !collisions[0])
         {
+            if (aC) aC.SetBool("isWalking", true);
             transform.Translate(transform.right / 10);
+            Body.transform.localScale = new Vector3(scaleX, Body.transform.localScale.y, Body.transform.localScale.z);
+        }
+        else
+        {
+            if (aC) aC.SetBool("isWalking", false);
         }
     }
 

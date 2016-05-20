@@ -29,7 +29,13 @@ public class BigPNJ : PNJ {
 
         int modifier = b ? 1 : -1;
 
-        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + modifier, transform.localScale.z);
+        aC.SetBool("isAlive", b);
+
+        GetComponent<BoxCollider2D>().size = new Vector2(GetComponent<BoxCollider2D>().size.x, GetComponent<BoxCollider2D>().size.y+modifier);
+
+        GetComponent<BoxCollider2D>().offset = new Vector2(GetComponent<BoxCollider2D>().offset.x, GetComponent<BoxCollider2D>().offset.y + modifier * 0.33f);
+
+        //transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + modifier, transform.localScale.z);
 
         distToGround = GetComponent<Collider2D>().bounds.extents.y;
     }
