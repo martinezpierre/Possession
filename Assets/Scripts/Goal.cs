@@ -15,11 +15,11 @@ public class Goal : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (Vector2.Distance(pC.transform.position, transform.position) < 2f)
+        if (Vector2.Distance(pC.transform.position, transform.position) < 4f)
         {
             Debug.Log("endLevel");
 
-            SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene("EndScreen");
         }
     }
 }

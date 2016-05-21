@@ -15,50 +15,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentBody = transform.parent.GetComponent<Controlable>();
-
-        float theta_scale = 0.1f;             //Set lower to add more points
-        int size = (int)((2.0 * Mathf.PI) / theta_scale); //Total number of points in circle.
-
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
-        lineRenderer.SetColors(Color.black, possessionColor);
-        lineRenderer.SetWidth(0.2F, 0.2F);
-        lineRenderer.SetVertexCount(size+1);
-
-        int i = 0;
-        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
-        {
-            float x = 12f * Mathf.Cos(theta);
-            float y = 12f * Mathf.Sin(theta);
-
-            Vector3 pos = new Vector3(x, y, 0);
-            
-            lineRenderer.SetPosition(i, pos);
-            i += 1;
-        }
+        
     }
-
-    void DrawCircle(float range)
-    {
-        float theta_scale = 0.1f;             //Set lower to add more points
-        int size = (int)((2.0 * Mathf.PI) / theta_scale); //Total number of points in circle.
-
-        lineRenderer.SetWidth(0.2F, 0.2F);
-        lineRenderer.SetVertexCount(size + 1);
-
-        int i = 0;
-        for (float theta = 0; theta < 2 * Mathf.PI; theta += 0.1f)
-        {
-            float x = transform.position.x + range * Mathf.Cos(theta);
-            float y = transform.position.y + range * Mathf.Sin(theta);
-
-            Vector3 pos = new Vector3(x, y, 0);
-
-            lineRenderer.SetPosition(i, pos);
-            i += 1;
-        }
-    }
-
+    
     // Update is called once per frame
     void LateUpdate()
     {
@@ -68,8 +27,6 @@ public class PlayerController : MonoBehaviour
         }
 
         currentBody.Move();
-
-        DrawCircle(12f);
     }
     
     public void ChangeBody(Transform t)
@@ -79,7 +36,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    IEnumerator ChangeAnim(Transform t)
+    IEnumerator ChangeAnim(Transform target)
     {
         yield return null;
         
@@ -87,7 +44,18 @@ public class PlayerController : MonoBehaviour
 
         float timer = Time.time;
 
-        while (t && transform && Vector2.Distance(t.position, transform.position) > 0.01f && Time.time - timer < 1f)
+        Transform t;
+
+        if(target.GetChild(0).name == "target")
+        {
+            t = target.GetChild(0);
+        }
+        else
+        {
+            t = target;
+        }
+
+        while (t && transform && Vector2.Distance(t.position, transform.position) > 0.01f && Time.time - timer < .2f)
         {
             float step = 100f * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, t.position, step);
@@ -95,16 +63,16 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         
-        transform.parent = t;
+        transform.parent = target;
 
         currentBody.TakeControl(false);
 
-        if (t)
+        if (target)
         {
-            currentBody = t.GetComponent<Controlable>();
+            currentBody = target.GetComponent<Controlable>();
             currentBody.Body.color = possessionColor;
         }
 
-        transform.localPosition = Vector3.zero;
+        transform.position = t.transform.position;
     }
 }

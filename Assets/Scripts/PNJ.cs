@@ -20,7 +20,7 @@ public class PNJ : Controlable {
     {
         base.Move();
 
-        if (Input.GetKeyDown(KeyCode.Space) && !jumping && !isFalling)
+        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Space)) && !jumping && !isFalling)
         {
             StartCoroutine(Jump());
         }
