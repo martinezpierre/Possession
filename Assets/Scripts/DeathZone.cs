@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class DeathZone : MonoBehaviour {
 
@@ -17,7 +18,7 @@ public class DeathZone : MonoBehaviour {
     {
         if (other.GetComponentInChildren<PlayerController>())
         {
-            Application.LoadLevel(Application.loadedLevel);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {
