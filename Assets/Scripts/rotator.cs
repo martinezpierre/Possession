@@ -12,7 +12,7 @@ public class rotator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = target.position;
+        transform.position = target.position + new Vector3(0,0,-4);
         transform.Rotate(new Vector3(0, 0, 10));
 	}
 }
