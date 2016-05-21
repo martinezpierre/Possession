@@ -10,7 +10,11 @@ public class LittlePNJ : Controlable
     SimplePNJ taker = null;
 
     public GameObject EObject;
-    
+
+    public AnimationCurve walkingAnimCurve;
+
+    float Timer;
+
     // Use this for initialization
     protected override void Start()
     {
@@ -18,6 +22,7 @@ public class LittlePNJ : Controlable
 
         pC = FindObjectOfType<PlayerController>();
 
+        Debug.Log(pC);
         if (EObject)
         {
             EObject.SetActive(false);
@@ -29,6 +34,8 @@ public class LittlePNJ : Controlable
     {
         base.Update();
 
+        MoveAnimation();
+
         if (canBeTaken && Input.GetKeyUp(KeyCode.E))
         {
             taker.Take(gameObject);
@@ -38,6 +45,8 @@ public class LittlePNJ : Controlable
         {
             canBeTaken = true;
             taker = pC.transform.parent.GetComponent<SimplePNJ>();
+
+
             if (EObject)
             {
                 EObject.SetActive(true);
@@ -80,6 +89,19 @@ public class LittlePNJ : Controlable
                 transform.Translate(-transform.up / 10);
             }
         }
-        
+    }
+
+    void MoveAnimation()
+    {
+        Timer += Time.deltaTime;
+
+        if (isMooving)
+        {
+            float newX = scaleX - 0.2f * walkingAnimCurve.Evaluate(Timer);
+            
+            Body.transform.localScale = new Vector3(newX, Body.transform.localScale.y, Body.transform.localScale.z);
+
+            if (Timer > 1.0f) { Timer = 0; }
+        }
     }
 }

@@ -40,6 +40,8 @@ public class SimplePNJ : PNJ {
         inHand.transform.parent = transform;
         inHand.transform.localPosition = Vector3.zero;
 
+        inHand.GetComponent<Controlable>().usable = false;
+
         oQP = true;
     }
 
@@ -48,6 +50,8 @@ public class SimplePNJ : PNJ {
         if (oQP) return;
 
         Debug.Log("throw");
+        
+        inHand.GetComponent<Controlable>().usable = true;
 
         inHand.GetComponent<Rigidbody2D>().isKinematic = false;
 

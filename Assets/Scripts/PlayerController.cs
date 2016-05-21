@@ -84,10 +84,13 @@ public class PlayerController : MonoBehaviour
         
         transform.parent = null;
 
-        while (t && transform && Vector2.Distance(t.position, transform.position) > 0.01f)
+        float timer = Time.time;
+
+        while (t && transform && Vector2.Distance(t.position, transform.position) > 0.01f && Time.time - timer < 1f)
         {
             float step = 100f * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, t.position, step);
+            
             yield return new WaitForSeconds(0.01f);
         }
         

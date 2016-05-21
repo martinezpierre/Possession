@@ -8,9 +8,7 @@ public class CameraScript : MonoBehaviour {
     public List<GameObject> limits;
 
     public Transform target;
-
-    Vector3 lastTargetPos;
-
+    
     Vector3 addi;
 
 	// Use this for initialization
@@ -21,8 +19,8 @@ public class CameraScript : MonoBehaviour {
         }
         
         addi = target.position - transform.position;
-
-	}
+        
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -31,21 +29,26 @@ public class CameraScript : MonoBehaviour {
 
         bool canMove = true;
         
-        float direction = (target.position - lastTargetPos).x;
-        
-        float modificator = direction > 0 ? 30 : -30;
+        float modificator = Input.GetKey(KeyCode.Q)  ? -30 : 30;
 
         Collider2D obst = Physics2D.OverlapPoint(new Vector2(newPos.x + modificator, newPos.y));
+        Collider2D obst2 = Physics2D.OverlapPoint(new Vector2(newPos.x - modificator, newPos.y));
+        Collider2D obst3 = Physics2D.OverlapPoint(new Vector2(newPos.x, newPos.y-16));
 
-        if (obst && obst.tag == "LevelLimit")
+        Debug.DrawLine(target.transform.position, new Vector2(newPos.x, newPos.y - 16), Color.red, 0.1f);
+
+        if ((obst && obst.tag == "LevelLimit")  || (obst2 && obst2.tag == "LevelLimit"))
         {
             canMove = false;
         }
 
         if (canMove)
         {
-            lastTargetPos = transform.position;
             transform.position = newPos;
+        }
+        else if (!(obst3 && obst3.tag == "LevelLimit"))
+        {
+            transform.position = new Vector3(transform.position.x, newPos.y, newPos.z);
         }
 
 	}

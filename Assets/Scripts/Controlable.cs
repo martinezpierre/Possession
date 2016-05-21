@@ -19,7 +19,11 @@ public class Controlable : MonoBehaviour
 
     protected Animator aC;
 
-    float scaleX;
+    protected float scaleX;
+
+    protected bool isMooving;
+
+    [HideInInspector]public Switch switchObject;
 
     // Use this for initialization
     protected virtual void Start()
@@ -115,18 +119,23 @@ public class Controlable : MonoBehaviour
         if (Input.GetKey(KeyCode.Q) && !collisions[1])
         {
             if (aC) aC.SetBool("isWalking",true);
-            transform.Translate(-transform.right / 10);
-            Body.transform.localScale = new Vector3(-scaleX, Body.transform.localScale.y, Body.transform.localScale.z);
+            transform.Translate(-transform.right / 7);
+            if(Body.transform.localScale.x > 0) Body.transform.localScale = new Vector3(-Body.transform.localScale.x, Body.transform.localScale.y, Body.transform.localScale.z);
+            //Body.transform.localScale = new Vector3(-scaleX, Body.transform.localScale.y, Body.transform.localScale.z);
+            isMooving = true;
         }
         else if (Input.GetKey(KeyCode.D) && !collisions[0])
         {
             if (aC) aC.SetBool("isWalking", true);
-            transform.Translate(transform.right / 10);
-            Body.transform.localScale = new Vector3(scaleX, Body.transform.localScale.y, Body.transform.localScale.z);
+            transform.Translate(transform.right / 7);
+            if (Body.transform.localScale.x < 0) Body.transform.localScale = new Vector3(-Body.transform.localScale.x, Body.transform.localScale.y, Body.transform.localScale.z);
+            //Body.transform.localScale = new Vector3(scaleX, Body.transform.localScale.y, Body.transform.localScale.z);
+            isMooving = true;
         }
         else
         {
             if (aC) aC.SetBool("isWalking", false);
+            isMooving = false;
         }
     }
 
@@ -137,6 +146,19 @@ public class Controlable : MonoBehaviour
         if (!b)
         {
             Body.color = Color.white;
+        }
+
+        if (switchObject)
+        {
+            if (b)
+            {
+                switchObject.OnTriggerEnter2D(GetComponent<Collider2D>());
+            }
+            else
+            {
+                switchObject.OnTriggerExit2D(GetComponent<Collider2D>());
+            }
+            
         }
     }
 }

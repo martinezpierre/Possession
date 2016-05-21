@@ -9,35 +9,61 @@ public class Switch : MonoBehaviour {
     public GameObject EObject;
 
     public List<Door> doors;
+    
+    public GameObject switchObject;
 
 	// Use this for initialization
 	void Start () {
         EObject.SetActive(false);
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
 	    if(usable && Input.GetKeyDown(KeyCode.E))
         {
-            foreach(Door d in doors)
+            StartCoroutine(AnimationOnOff());
+            foreach (Door d in doors)
             {
                 d.Toogle();
             }
         }
 	}
-
-    void OnTriggerEnter2D(Collider2D other)
+    
+    public void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "PNJSpecial")
         {
             usable = true;
             EObject.SetActive(true);
+            other.GetComponent<Controlable>().switchObject = this;
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    public void OnTriggerExit2D(Collider2D other)
     {
         usable = false;
         EObject.SetActive(false);
+    }
+
+    IEnumerator AnimationOnOff()
+    {
+        if((int)switchObject.transform.localEulerAngles.z == 0)
+        {
+            while ((int)switchObject.transform.localEulerAngles.z != 270)
+            {
+                switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, switchObject.transform.localEulerAngles.z - 10);
+                yield return new WaitForSeconds(0.01f);
+            }
+        }
+        else
+        {
+            while ((int)switchObject.transform.localEulerAngles.z != 0)
+            {
+                switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, switchObject.transform.localEulerAngles.z + 10);
+                yield return new WaitForSeconds(0.01f);
+            }
+        }
+        
+        yield return null;
     }
 }
