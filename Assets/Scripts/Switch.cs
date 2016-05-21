@@ -15,6 +15,7 @@ public class Switch : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         EObject.SetActive(false);
+        switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, 340);
     }
 	
 	// Update is called once per frame
@@ -47,19 +48,25 @@ public class Switch : MonoBehaviour {
 
     IEnumerator AnimationOnOff()
     {
-        if((int)switchObject.transform.localEulerAngles.z == 0)
+        Debug.Log(switchObject.transform.localEulerAngles.z);
+
+        if((int)switchObject.transform.localEulerAngles.z >= 340)
         {
-            while ((int)switchObject.transform.localEulerAngles.z != 270)
+            while ((int)switchObject.transform.localEulerAngles.z >= 250)
             {
-                switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, switchObject.transform.localEulerAngles.z - 10);
+                float z = (int)switchObject.transform.localEulerAngles.z - 10;
+                
+                switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, z);
                 yield return new WaitForSeconds(0.01f);
             }
         }
         else
         {
-            while ((int)switchObject.transform.localEulerAngles.z != 0)
+            while ((int)switchObject.transform.localEulerAngles.z <= 340)
             {
-                switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, switchObject.transform.localEulerAngles.z + 10);
+                float z = (int)switchObject.transform.localEulerAngles.z + 10;
+                
+                switchObject.transform.localEulerAngles = new Vector3(switchObject.transform.localEulerAngles.x, switchObject.transform.localEulerAngles.y, z);
                 yield return new WaitForSeconds(0.01f);
             }
         }
